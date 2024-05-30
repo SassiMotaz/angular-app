@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE_FRONTEND = "sassimotaz/angular-app"
-        DOCKER_IMAGE_BACKEND = "sassimotaz/springboot"
+        DOCKER_IMAGE_FRONTEND = "docker-desktop/angular-app"
+        DOCKER_IMAGE_BACKEND = "docker-desktop/springboot"
         DOCKER_TAG = "latest"
     }
     stages {
