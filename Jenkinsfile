@@ -8,7 +8,7 @@ pipeline {
         }
         stage('Build Angular') {
             steps {
-                dir('JenkinsTP4') {
+                dir('angular-app') {
                     script {
                         sh 'docker build -t frontend .'
                     }
