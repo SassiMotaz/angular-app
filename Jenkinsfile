@@ -6,11 +6,6 @@ pipeline {
         DOCKER_TAG = "latest"
     }
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/SassiMotaz/angular-app.git'
-            }
-        }
         stage('Build Angular') {
             steps {
                 dir('angular-app') {
