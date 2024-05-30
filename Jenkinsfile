@@ -8,7 +8,7 @@ pipeline {
         }
         stage('Build Angular') {
             steps {
-                dir('angular-app') {
+                dir('angular-app\angular-app') {
                     script {
                         sh 'docker build -t frontend .'
                     }
