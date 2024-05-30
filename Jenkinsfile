@@ -27,10 +27,8 @@ pipeline {
         stage('Push Docker Images') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'dockerhub_credentials', url: 'https://index.docker.io/v1/') {
                         sh "docker push your_dockerhub_username/angular-app:latest"
                         sh "docker push your_dockerhub_username/springboot:latest"
-                    }
                 }
             }
         }
