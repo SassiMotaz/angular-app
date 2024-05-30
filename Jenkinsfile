@@ -1,49 +1,75 @@
 pipeline {
     agent any
+    tools {
+        maven 'maven_3_9_6'
+        jdk 'jdk_11'
+        nodejs 'nodejs_14_17_0'
+    }
     stages {
-        stage('Checkout') {
+        stage('Clean up') {
             steps {
-                git branch: 'main', url: 'https://github.com/SassiMotaz/angular-app.git'
+                deleteDir()
             }
         }
-        stage('Build Angular') {
+        stage('Clone repo') {
+            steps {
+                script {
+                    // Clone the repository; use sh for Unix and bat for Windows
+                    if (isUnix()) {
+                        sh 'git clone https://github.com/SassiMotaz/angular-app.git'
+                    } else {
+                        bat 'git clone https://github.com/SassiMotaz/angular-app.git'
+                    }
+                }
+            }
+        }
+        stage('Generate backend image') {
             steps {
                 dir('angular-app') {
                     script {
-                        sh 'docker build -t frontend .'
+                        // Use sh for Unix and bat for Windows
+                        if (isUnix()) {
+                            sh 'mvn clean install'
+                            sh 'docker build -t backend .'
+                        } else {
+                            bat 'mvn clean install'
+                            bat 'docker build -t backend .'
+                        }
                     }
                 }
             }
         }
-        stage('Build Spring Boot') {
+
+        stage('Generate frontend image') {
             steps {
-                dir('springboot') {
+                dir('angular-app') {
                     script {
-                        sh 'docker build -t backend .'
+                        // Use sh for Unix and bat for Windows
+                        if (isUnix()) {
+                            sh 'npm install'
+                            sh 'npm run build'
+                            sh 'docker build -t frontend .'
+                        } else {
+                            bat 'npm install'
+                            bat 'npm run build'
+                            bat 'docker build -t frontend .'
+                        }
                     }
                 }
             }
         }
-        stage('Push Docker Images') {
-            steps {
-                script {
-                        sh "docker push your_dockerhub_username/angular-app:latest"
-                        sh "docker push your_dockerhub_username/springboot:latest"
-                }
-            }
-        }
+
         stage('Deploy') {
             steps {
                 script {
-                    sh 'docker-compose down'
-                    sh 'docker-compose up -d'
+                    // Use sh for Unix and bat for Windows
+                    if (isUnix()) {
+                        sh 'docker-compose up -d'
+                    } else {
+                        bat 'docker-compose up -d'
+                    }
                 }
             }
-        }
-    }
-    post {
-        always {
-            cleanWs()
         }
     }
 }
